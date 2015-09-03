@@ -4,6 +4,8 @@ import io
 import zipfile
 import binascii
 import dexUtil
+import nltk
+
 __author__ = 'janetacarr'
 
 
@@ -44,7 +46,60 @@ print "Begin data section dump:"
 
 i = 0
 for byte in flatdex[dataOffset:dataOffset+dataSize/2]:
-    if (byte == '\x28'):
-        i = i+1
+    i = i + 1
+    if (byte == '.CODE'):
+        break
 
 print "gotos: " + str(i)
+
+#bytes = nltk.word_tokenize(''.join(flatdex[i:dataSize]))
+
+codeTrigrams = nltk.trigrams(flatdex[dataOffset:dataSize])
+codeFourgrams = nltk.ngrams(flatdex[dataOffset:dataSize], 4)
+codeFivegrams = nltk.ngrams(flatdex[dataOffset:dataSize], 5)
+codeSixgrams = nltk.ngrams(flatdex[dataOffset:dataSize], 6)
+
+print "Dump Trigrams:\n"
+stuff = list(codeTrigrams)
+tricount = 0
+for item in set(stuff):
+    tricount = tricount +1
+print tricount
+#print [(item, stuff.count(item)) for item in sorted(set(stuff))]
+
+
+print "\nDump fourgrams\n"
+stuff = list(codeFourgrams)
+fourcount = 0
+for item in set(stuff):
+    fourcount = fourcount +1
+print fourcount
+
+MethodCalls = 0
+for l in flatdex[dataOffset:dataSize]:
+    if((l == '\x6e') or (l == '\x6f') or (l == '\x70') or (l == '') or (l == '\x71') or (l == '\x72') or (l == '\x73') or (l == '\x74') or (l == '\x76') or (l == '\x77') or (l == '\x78')):
+        MethodCalls = MethodCalls + 1
+
+
+print [(item, stuff.count(item)) for item in sorted(set(stuff))]
+
+
+print "\nDump fivegrams\n"
+stuff = list(codeFivegrams)
+fivecount = 0
+for item in set(stuff):
+    fivecount = fivecount +1
+print fivecount
+#print [(item, stuff.count(item)) for item in sorted(set(stuff))]
+
+print "\nDump sixgrams\n"
+stuff = list(codeSixgrams)
+sixcount = 0
+for item in set(stuff):
+    sixcount = sixcount +1
+print sixcount
+#print [(item, stuff.count(item)) for item in sorted(set(stuff))]
+
+
+print "Total n-grams: " + str(( fourcount + tricount)) + "\n"
+print "Number of externel library calls: " + str(MethodCalls) + "\n"
