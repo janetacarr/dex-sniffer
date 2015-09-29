@@ -1,4 +1,7 @@
 __author__ = 'janetacarr'
+import dexUtil
+import zipfile
+import sys
 
 #Control flow operators, format : syntax .  format reference http://source.android.com/devices/tech/dalvik/instruction-formats.html
 GOTO = '\x28' # 10t : goto +AA
@@ -33,5 +36,68 @@ IN_DIRECTR = '\x76'
 IN_STATICR = '\x77'
 IN_INTERFACER = '\x78'
 
-opBytes = [GOTO, GOTO16, GOTO32, PSWITCH, SSWITCH, IF_EQ, IF_NE, IF_LT, IF_GE, IF_GT, IF_LE, IF_EQZ, IF_NEZ, IF_LTZ, IF_GEZ, IF_GTZ, IF_LEZ, IN_VIRTUAL, IN_SUPER, IN_DIRECT, IN_STATIC, IN_INTERFACE, IN_VIRTUALR, IN_SUPERR, IN_DIRECTR, IN_STATICR,IN_INTERFACER]
+opBytes = [GOTO, GOTO16, GOTO32, PSWITCH, SSWITCH,
+           IF_EQ, IF_NE, IF_LT, IF_GE, IF_GT, IF_LE,
+           IF_EQZ, IF_NEZ, IF_LTZ, IF_GEZ, IF_GTZ,
+           IF_LEZ, IN_VIRTUAL, IN_SUPER, IN_DIRECT,
+           IN_STATIC, IN_INTERFACE, IN_VIRTUALR,
+           IN_SUPERR, IN_DIRECTR, IN_STATICR, IN_INTERFACER]
 
+endianness = True
+
+data = sys.argv[1]
+
+#Get our apk file from the OS
+apk = zipfile.ZipFile(data, 'r')
+
+#extract dex file
+dex = list(apk.open('classes.dex'))
+flatdex = []
+
+#convert dex file to list of bytes
+for line in dex:
+    for byte in line:
+        flatdex.append(byte)
+
+#print flatdex[0:104]
+if (flatdex[40:44] == ['\x78', '\x56', '\x34', '\x12']):
+    #print "dex is Big endian"
+    endianness = False
+
+mapOffset = dexUtil.extractValue(flatdex, 48, 4, endianness)
+dataOffset = dexUtil.extractValue(flatdex, 108, 4, endianness)
+dataSize = dexUtil.extractValue(flatdex, 104, 4, endianness)
+
+print "map offset: " + str(mapOffset)
+print "Data offset: " + str(dataOffset)
+print "Data size: " + str(dataSize)
+
+
+instructionOffset = 0
+instructionNodes = []
+
+#handle individual branch instructions here
+def handleInstruction(byte):
+    pass
+
+
+for b in flatdex[dataOffset:dataOffset+dataSize]:
+    for item in opBytes:
+        if item == b:
+            handleInstruction(b)
+    instructionOffset = instructionOffset + 1
+
+instructionNodes = set(instructionNodes)
+
+#Find out adjacent nodes.
+def adjacentNodes():
+    for node in instructionNodes:
+        pass
+
+#Create edge set
+def findEdges():
+    pass
+
+#Label function for edges
+def labelFunction((source, dest)):
+    pass
