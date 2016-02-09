@@ -12,7 +12,7 @@ def isAscii(character):
 def fixFormat(author, sample, path):
     f = open(path, 'r')
     input = list(f)
-    output = open('/home/rst/datasetprofiles/digrams.txt', 'a+')
+    output = open('/home/rst/datasetprofiles/sixgrams.txt', 'a+')
 
     bytelist = []
     first = True
@@ -36,25 +36,39 @@ def fixFormat(author, sample, path):
 
         bytestring = ''
         commas = 0
-        for c in bytelist[0:8]:
+        for c in bytelist[0:24]:
             bytestring = bytestring + c
-        try:
-            if isAscii(bytestring[0]):
-                c = bytestring[0].encode("hex")
-                bytestring = "\\x" + c + bytelist[4] + bytelist[5] + bytelist[6] + bytelist[7]
-            if isAscii(bytestring[4]):
-                c = bytestring[4].encode("hex")
-                bytestring = bytestring[0:4] + "\\x" + c
+        # try:
+        #     if isAscii(bytestring[0]):
+        #         c = bytestring[0].encode("hex")
+        #         bytestring = "\\x" + c + bytelist[4] + bytelist[5] + bytelist[6] + bytelist[7]
+        #     if isAscii(bytestring[4]):
+        #         c = bytestring[4].encode("hex")
+        #         bytestring = bytestring[0:4] + "\\x" + c
+        #     if isAscii(bytestring[8]):
+        #         c = bytestring[8].encode("hex")
+        #         bytestring = bytestring[4:8] + "\\x" + c
+        #     if isAscii(bytestring[12]):
+        #         c = bytestring[12].encode("hex")
+        #         bytestring = bytestring[8:12] + "\\x" + c
+        #     if isAscii(bytestring[16]):
+        #         c = bytestring[16].encode("hex")
+        #         bytestring = bytestring[8:16] + "\\x" + c
+        #     if isAscii(bytestring[20]):
+        #         c = bytestring[20].encode("hex")
+        #         bytestring = bytestring[16:20] + "\\x" + c
+        #     if isAscii(bytestring[24]):
+        #         c = bytestring[24].encode("hex")
+        #         bytestring = bytestring[20:24] + "\\x" + c
+        #     #print bytestring
 
-            #print bytestring
+        if(i == len(input)-1):
+            output.write(bytestring)
+        else:
+            output.write(bytestring + ',')
 
-            if(i == len(input)-1):
-                output.write('\"'+bytestring+'\"')
-            else:
-                output.write('\"'+bytestring + '\",')
-
-        except:
-            pass
+        # except:
+        #     pass
         # if(i == 1000):
         #     output.write(bytestring+'\n')
         # else:
@@ -75,7 +89,7 @@ def fixFormat(author, sample, path):
 
 def run(datasetprofiles = 0):
 
-    output = open('/home/rst/datasetprofiles/digrams.txt', 'a+')
+    output = open('/home/rst/datasetprofiles/sixgrams.txt', 'a+')
     for i in range(0, 992):
         if i == 991:
             output.write("column" + str(i)+"\n")
@@ -96,7 +110,7 @@ def run(datasetprofiles = 0):
             break
 
         for file in apks:
-            if (file != '._.DS_Store') and (file != '.DS_Store') and (file[-11:] == 'digrams.txt'):
+            if (file != '._.DS_Store') and (file != '.DS_Store') and (file[-12:] == 'sixgrams.txt'):
                 print '/home/rst/datasetprofiles/' + str(i) + '/' + str(file)
                 #print ('/home/rst/datasetprofiles/' + str(i) + '/' + str(file))[:-4]+'digrams.txt'
                 fixFormat(str(i), str(file), '/home/rst/datasetprofiles/' + str(i) + '/' + str(file))

@@ -1,3 +1,5 @@
+__author__ = 'rst'
+
 __author__ = 'janetacarr'
 
 from os import walk
@@ -12,7 +14,7 @@ def isAscii(character):
 def fixFormat(author, sample, path):
     f = open(path, 'r')
     input = list(f)
-    output = open('/home/rst/datasetprofiles/digrams.txt', 'a+')
+    output = open('/home/rst/datasetprofiles/fourgrams.txt', 'a+')
 
     bytelist = []
     first = True
@@ -36,7 +38,7 @@ def fixFormat(author, sample, path):
 
         bytestring = ''
         commas = 0
-        for c in bytelist[0:8]:
+        for c in bytelist[0:16]:
             bytestring = bytestring + c
         try:
             if isAscii(bytestring[0]):
@@ -49,9 +51,9 @@ def fixFormat(author, sample, path):
             #print bytestring
 
             if(i == len(input)-1):
-                output.write('\"'+bytestring+'\"')
+                output.write(bytestring)
             else:
-                output.write('\"'+bytestring + '\",')
+                output.write(bytestring + ',')
 
         except:
             pass
@@ -75,7 +77,7 @@ def fixFormat(author, sample, path):
 
 def run(datasetprofiles = 0):
 
-    output = open('/home/rst/datasetprofiles/digrams.txt', 'a+')
+    output = open('/home/rst/datasetprofiles/fourgrams.txt', 'a+')
     for i in range(0, 992):
         if i == 991:
             output.write("column" + str(i)+"\n")
@@ -96,7 +98,7 @@ def run(datasetprofiles = 0):
             break
 
         for file in apks:
-            if (file != '._.DS_Store') and (file != '.DS_Store') and (file[-11:] == 'digrams.txt'):
+            if (file != '._.DS_Store') and (file != '.DS_Store') and (file[-13:] == 'fourgrams.txt'):
                 print '/home/rst/datasetprofiles/' + str(i) + '/' + str(file)
                 #print ('/home/rst/datasetprofiles/' + str(i) + '/' + str(file))[:-4]+'digrams.txt'
                 fixFormat(str(i), str(file), '/home/rst/datasetprofiles/' + str(i) + '/' + str(file))
